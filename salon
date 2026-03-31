@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f28c28" />
+  <title>Модерн — мобильное приложение</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#102033;
+      --muted:#6f7e8f;
+      --line:#e7edf5;
+      --orange:#f28c28;
+      --orange2:#ffb45c;
+      --blue:#2d6cdf;
+      --blue2:#4f88ff;
+      --green:#2da56a;
+      --red:#e85d5d;
+      --shadow:0 16px 44px rgba(16,32,51,.10);
+      --radius:22px;
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(242,140,40,.14), transparent 26%),
+        radial-gradient(circle at top right, rgba(45,108,223,.12), transparent 28%),
+        var(--bg);
+      color:var(--text);
+      overscroll-behavior:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    .app{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:0;
+    }
+    .shell{
+      width:100%;
+      max-width:430px;
+      min-height:100vh;
+      background:linear-gradient(180deg,#fcfdff 0%, #f4f7fb 100%);
+      position:relative;
+      overflow:hidden;
+      box-shadow:none;
+    }
+    .top-safe{height:var(--safe-top);background:#fff}
+    .statusbar{
+      padding:10px 16px 8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      color:#6d7b8a;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(231,237,245,.8);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .brandbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 16px;
+      background:rgba(255,255,255,.88);
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:42px;
+      z-index:9;
+      backdrop-filter:blur(12px);
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .logo{
+      width:42px;height:42px;border-radius:15px;
+      background:linear-gradient(135deg,var(--orange),var(--blue));
+      color:#fff;font-weight:900;display:grid;place-items:center;
+      box-shadow:0 10px 22px rgba(45,108,223,.18);
+      flex:none;
+    }
+    .brand h1{font-size:16px;line-height:1.1;margin:0}
+    .brand p{margin:3px 0 0;font-size:11px;color:var(--muted)}
+    .avatar{
+      width:40px;height:40px;border-radius:50%;overflow:hidden;
+      border:1px solid var(--line);flex:none;
+      background:linear-gradient(135deg,#ecf2ff,#fff);
+    }
+    .avatar svg{width:100%;height:100%}
+    .content{
+      height:calc(100vh - 42px - 66px - var(--safe-top) - var(--safe-bottom) - 72px);
+      overflow:auto;
+      padding:16px 16px 24px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .screen{display:none;animation:fade .2s ease}
+    .screen.active{display:block}
+    @keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .hero{
+      border-radius:28px;
+      padding:18px;
+      background:linear-gradient(135deg, rgba(242,140,40,.96), rgba(45,108,223,.92));
+      color:#fff;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:after{
+      content:"";
+      position:absolute;inset:auto -20px -24px auto;
+      width:120px;height:120px;border-radius:50%;
+      background:rgba(255,255,255,.12);
+      filter:blur(4px);
+    }
+    .hero h2{margin:0 0 8px;font-size:22px;line-height:1.05}
+    .hero p{margin:0 0 14px;font-size:13px;opacity:.94;max-width:28ch}
+    .pill-row{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);font-size:12px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 8px 24px rgba(16,32,51,.05);
+      padding:14px;
+    }
+    .card h3,.section-title{margin:0 0 10px;font-size:15px}
+    .muted{color:var(--muted)}
+    .small{font-size:12px;line-height:1.4}
+    .row{display:flex;gap:10px;align-items:center}
+    .space{justify-content:space-between}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .btn{
+      border:none;border-radius:16px;padding:13px 14px;font-weight:700;cursor:pointer;
+      transition:.15s transform,.15s opacity,.15s background;
+      touch-action:manipulation;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn-primary{background:linear-gradient(135deg,var(--orange),var(--blue));color:#fff;box-shadow:0 10px 22px rgba(242,140,40,.18)}
+    .btn-soft{background:#eef4ff;color:#2453b8}
+    .btn-ghost{background:#f6f8fc;color:#425062}
+    .btn-danger{background:#fff0f0;color:#c43f3f}
+    .btn-green{background:#eefaf3;color:#1d7b4c}
+    .btn-block{width:100%}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:9px 11px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;font-size:12px;color:#3d4d60;font-weight:600;
+    }
+    .chip.active{border-color:rgba(45,108,223,.25);background:#eef4ff;color:#2453b8}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .service-tile,.master-tile,.family-tile,.product-tile,.history-tile{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:#fff;
+      padding:14px;
+      box-shadow:0 8px 20px rgba(16,32,51,.04);
+    }
+    .thumb{
+      width:56px;height:56px;border-radius:18px;flex:none;
+      background:linear-gradient(135deg,#fbe1c2,#dce9ff);
+      display:grid;place-items:center;font-size:24px;
+    }
+    .thumb.small{width:44px;height:44px;border-radius:14px;font-size:18px}
+    .title{margin:0;font-size:14px}
+    .meta{margin:4px 0 0;font-size:12px;color:var(--muted)}
+    .price{font-weight:800;font-size:14px}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .service-tile,.master-tile,.history-tile,.product-tile{display:flex;gap:12px;align-items:flex-start}
+    .family-tile{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .avatar-mini{
+      width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+      background:linear-gradient(135deg,#fff,#edf4ff);border:1px solid var(--line);font-weight:800;color:#27496d;flex:none;
+    }
+    .input, .select, .textarea{
+      width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;
+      padding:13px 14px;outline:none;color:var(--text);
+      transition:.15s border-color,.15s box-shadow;
+    }
+    .input:focus,.select:focus,.textarea:focus{border-color:rgba(45,108,223,.35);box-shadow:0 0 0 4px rgba(45,108,223,.08)}
+    .textarea{min-height:88px;resize:none}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .label{font-size:12px;color:var(--muted);font-weight:700}
+    .top-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .top-title h2{margin:0;font-size:19px;line-height:1.1}
+    .top-title p{margin:5px 0 0;color:var(--muted);font-size:12px}
+    .stepper{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+    .step{padding:8px 10px;border-radius:999px;background:#f5f8fd;color:#6d7b8a;font-size:12px;font-weight:700}
+    .step.active{background:linear-gradient(135deg,var(--orange),var(--blue));color:#fff}
+    .bottom-nav{
+      position:sticky;
+      bottom:0;
+      padding-bottom:calc(10px + var(--safe-bottom));
+      background:rgba(255,255,255,.96);
+      border-top:1px solid var(--line);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:4px;
+    }
+    .nav-item{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      padding:10px 4px 8px;font-size:11px;color:#6d7b8a;font-weight:700;
+    }
+    .nav-item .ico{font-size:18px;line-height:1}
+    .nav-item.active{color:#2453b8}
+    .nav-item.active .ico{filter:saturate(1.2)}
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+      background:var(--orange);color:#fff;font-size:11px;font-weight:800;
+    }
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);
+      bottom:calc(90px + var(--safe-bottom));
+      background:rgba(16,32,51,.92);color:#fff;padding:12px 14px;border-radius:14px;
+      font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.25s;
+      max-width:min(92vw,420px);z-index:99;
+    }
+    .toast.show{opacity:1}
+    .modal{
+      position:fixed;inset:0;background:rgba(13,20,32,.45);
+      display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:100;
+    }
+    .modal.show{display:flex}
+    .sheet{
+      width:100%;max-width:430px;background:#fff;border-radius:24px 24px 18px 18px;
+      padding:16px;box-shadow:0 -20px 50px rgba(0,0,0,.18);
+      padding-bottom:calc(16px + var(--safe-bottom));
+    }
+    .sheet h3{margin:0 0 10px;font-size:17px}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .beforeafter{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff}
+    .ba-top{height:86px;display:grid;place-items:center;font-weight:800;color:#fff}
+    .ba-bottom{padding:10px;font-size:12px;color:var(--muted)}
+    .tag{display:inline-block;padding:6px 9px;border-radius:999px;background:#f3f7ff;color:#2453b8;font-size:11px;font-weight:700}
+    .checklist{display:flex;flex-direction:column;gap:9px}
+    .check{display:flex;align-items:flex-start;gap:10px}
+    .check .box{width:18px;height:18px;border-radius:6px;background:#eef4ff;color:#2453b8;display:grid;place-items:center;font-size:12px;flex:none;margin-top:1px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .hidden{display:none !important}
+    .phone-frame-note{display:none}
+    .safe-bottom-gap{height:10px}
+    @media (min-width: 700px){
+      .app{padding:12px}
+      .shell{min-height:calc(100vh - 24px);border-radius:28px;overflow:hidden;max-width:430px;box-shadow:0 25px 70px rgba(0,0,0,.14)}
+      .phone-frame-note{display:block;text-align:center;font-size:12px;color:#718197;margin:8px 0 0}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="shell">
+      <div class="top-safe"></div>
+      <div class="statusbar">
+        <div id="statusTime">09:41</div>
+        <div>▮▮▮&nbsp;&nbsp;5G&nbsp;&nbsp;100%</div>
+      </div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">М</div>
+          <div>
+            <h1>Модерн</h1>
+            <p id="headerSubtitle">семейный салон красоты</p>
+          </div>
+        </div>
+        <div class="avatar" title="Профиль">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <rect width="100" height="100" rx="50" fill="url(#g)"/>
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#eef4ff"/>
+                <stop offset="1" stop-color="#ffffff"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="38" r="18" fill="#9fb5d4"/>
+            <path d="M22 84c4-17 18-24 28-24s24 7 28 24" fill="#9fb5d4"/>
+          </svg>
+        </div>
+      </div>
+
+      <main class="content">
+        <!-- LOGIN -->
+        <section class="screen active" id="screen-login">
+          <div class="hero">
+            <h2>Вход в приложение салона</h2>
+            <p>Онлайн-запись, семейные профили, чат с мастером и бонусы — всё в одном месте.</p>
+            <div class="pill-row">
+              <div class="pill">быстрый вход</div>
+              <div class="pill">под iPhone</div>
+              <div class="pill">рабочий ввод</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Войти по номеру телефона</h3>
+            <div class="stack">
+              <div class="field">
+                <div class="label">Номер телефона</div>
+                <input id="phoneInput" class="input" inputmode="tel" placeholder="+7 (___) ___-__-__" value="+7 (999) 123-45-67" />
+              </div>
+              <div class="field hidden" id="codeBlock">
+                <div class="label">Код из SMS</div>
+                <input id="codeInput" class="input" inputmode="numeric" maxlength="4" placeholder="1234" />
+              </div>
+              <button class="btn btn-primary btn-block" id="sendCodeBtn">Получить код</button>
+              <button class="btn btn-green btn-block hidden" id="loginBtn">Войти</button>
+            </div>
+            <div class="small muted" style="margin-top:10px">Демо-версия: код можно ввести любой, чтобы перейти дальше.</div>
+          </div>
+
+          <div class="grid2" style="margin-top:12px">
+            <div class="card">
+              <div class="section-title">Фишка</div>
+              <div class="small muted">Семейная запись: выбираете не только себя, но и любого члена семьи с одного профиля.</div>
+            </div>
+            <div class="card">
+              <div class="section-title">Бонусы</div>
+              <div class="small muted">Баллы копятся за визиты и потом списываются на услугу или товар.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HOME -->
+        <section class="screen" id="screen-home">
+          <div class="hero">
+            <h2 id="homeGreeting">Привет, Анна</h2>
+            <p>Сегодня у вас есть запись и 320 бонусов на балансе.</p>
+            <div class="pill-row">
+              <div class="pill">320 баллов</div>
+              <div class="pill">1 активная запись</div>
+              <div class="pill">семья 4 человека</div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-block btn-primary" id="quickBookBtn" style="flex:1">Записаться</button>
+              <button class="btn btn-block btn-ghost" id="openChatShortcut" style="flex:1">Чат с мастером</button>
+            </div>
+          </div>
+
+          <div class="grid2" style="margin-top:12px">
+            <div class="card">
+              <div class="section-title">Бонусы</div>
+              <div style="font-size:26px;font-weight:900">320</div>
+              <div class="small muted">Можно списать до 20% от услуги.</div>
+            </div>
+            <div class="card">
+              <div class="section-title">Следующий визит</div>
+              <div style="font-weight:800">12 апреля, 15:20</div>
+              <div class="small muted">Женская стрижка • Марина</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="row space">
+              <h3>Семейные профили</h3>
+              <button class="btn btn-soft" id="goFamilyBtn" style="padding:10px 12px">Открыть</button>
+            </div>
+            <div class="chips" id="familyChips"></div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="row space">
+              <h3>Популярные услуги</h3>
+              <span class="tag">2 демо-услуги</span>
+            </div>
+            <div class="list" style="margin-top:10px">
+              <div class="service-tile">
+                <div class="thumb">✂️</div>
+                <div style="flex:1">
+                  <p class="title">Женская стрижка</p>
+                  <p class="meta">60 минут • мастер Марина • от 1 800 ₽</p>
+                </div>
+                <button class="btn btn-soft" data-go="service">Подробнее</button>
+              </div>
+              <div class="service-tile">
+                <div class="thumb">🎨</div>
+                <div style="flex:1">
+                  <p class="title">Окрашивание</p>
+                  <p class="meta">120 минут • консультация + уход</p>
+                </div>
+                <button class="btn btn-ghost" data-go="booking">Запись</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="row space">
+              <h3>Мастер рекомендует</h3>
+              <button class="btn btn-soft" id="openCatalogBtn" style="padding:10px 12px">Каталог</button>
+            </div>
+            <div class="small muted">После стрижки мастер советует уход: шампунь, маску, спрей — можно забронировать и забрать в салоне.</div>
+          </div>
+        </section>
+
+        <!-- BOOKING -->
+        <section class="screen" id="screen-booking">
+          <div class="top-title">
+            <div>
+              <h2>Онлайн-запись</h2>
+              <p>Путь клиента: кто, что, у кого и когда.</p>
+            </div>
+            <span class="tag">работает</span>
+          </div>
+          <div class="stepper">
+            <div class="step active">1. Кого</div>
+            <div class="step" id="stepService">2. Услуга</div>
+            <div class="step" id="stepMaster">3. Мастер</div>
+            <div class="step" id="stepTime">4. Время</div>
+          </div>
+
+          <div class="card">
+            <div class="field">
+              <div class="label">Записать</div>
+              <div class="chips" id="bookForChips"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="field">
+              <div class="label">Услуга</div>
+              <div class="chips" id="serviceChips"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="field">
+              <div class="label">Мастер</div>
+              <div class="chips" id="masterChips"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="grid2">
+              <div class="field">
+                <div class="label">Дата</div>
+                <input class="input" id="dateInput" type="date" />
+              </div>
+              <div class="field">
+                <div class="label">Время</div>
+                <select class="select" id="timeInput"></select>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="field">
+              <div class="label">Комментарий</div>
+              <textarea class="textarea" id="commentInput" placeholder="Например: хочу аккуратно сохранить длину и сделать мягкую чёлку."></textarea>
+            </div>
+            <div class="divider"></div>
+            <div class="checklist">
+              <div class="check"><div class="box">✓</div><div class="small">Оплата в приложении: демонстрационная кнопка оплаты.</div></div>
+              <div class="check"><div class="box">✓</div><div class="small">Баллы можно списать сразу при оформлении записи.</div></div>
+            </div>
+            <div class="hero-actions" style="margin-top:14px">
+              <button class="btn btn-primary" id="confirmBookingBtn" style="flex:1">Подтвердить запись</button>
+              <button class="btn btn-ghost" id="openCancelModalBtn" style="flex:1">Отменить / перенести</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SERVICE -->
+        <section class="screen" id="screen-service">
+          <div class="top-title">
+            <div>
+              <h2>Женская стрижка</h2>
+              <p>Услуга с понятным сценарием и переходом дальше.</p>
+            </div>
+            <span class="tag">демо</span>
+          </div>
+          <div class="card">
+            <div class="row space">
+              <div>
+                <div style="font-size:30px;font-weight:900">1 800 ₽</div>
+                <div class="small muted">60 минут • включает консультацию</div>
+              </div>
+              <div class="thumb small">✂️</div>
+            </div>
+            <div class="divider"></div>
+            <div class="small muted">В карточке можно показать описание, стоимость, что входит и рекомендации мастера.</div>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-go="booking" style="flex:1">Записаться</button>
+              <button class="btn btn-soft" data-go="master" style="flex:1">К мастеру</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h3>Что происходит после услуги</h3>
+            <div class="small muted">История посещения, фото до/после и рекомендации по уходу.</div>
+          </div>
+        </section>
+
+        <!-- MASTER -->
+        <section class="screen" id="screen-master">
+          <div class="top-title">
+            <div>
+              <h2>Мастер Марина</h2>
+              <p>Профиль специалиста, сертификаты, работы и чат.</p>
+            </div>
+            <span class="tag">4.9 ★</span>
+          </div>
+          <div class="card">
+            <div class="master-tile" style="padding:0;border:none;box-shadow:none">
+              <div class="thumb" style="width:66px;height:66px;border-radius:22px">👩‍🦰</div>
+              <div style="flex:1">
+                <p class="title">Марина Алексеевна</p>
+                <p class="meta">Стаж 12 лет • женские и детские стрижки • окрашивания</p>
+                <div class="chips" style="margin-top:8px">
+                  <span class="tag">20 сертификатов</span>
+                  <span class="tag">до / после</span>
+                  <span class="tag">чат онлайн</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="openChatBtn" style="flex:1">Написать мастеру</button>
+              <button class="btn btn-soft" data-go="booking" style="flex:1">Записаться</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Работы до / после</h3>
+            <div class="gallery">
+              <div class="beforeafter">
+                <div class="ba-top" style="background:linear-gradient(135deg,#f9c99a,#ee8f3f)">До</div>
+                <div class="ba-bottom">Обычное каре, без укладки</div>
+              </div>
+              <div class="beforeafter">
+                <div class="ba-top" style="background:linear-gradient(135deg,#8fb5ff,#2d6cdf)">После</div>
+                <div class="ba-bottom">Мягкая форма, блеск и объём</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Сертификаты</h3>
+            <div class="list">
+              <div class="chip" style="justify-content:space-between">Колористика 2024 <span>✓</span></div>
+              <div class="chip" style="justify-content:space-between">Женские стрижки PRO <span>✓</span></div>
+              <div class="chip" style="justify-content:space-between">Детский сервис <span>✓</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CHAT -->
+        <section class="screen" id="screen-chat">
+          <div class="top-title">
+            <div>
+              <h2>Чат с мастером</h2>
+              <p>Можно написать вопрос прямо перед записью.</p>
+            </div>
+            <span class="tag">онлайн</span>
+          </div>
+          <div class="card">
+            <div class="row space">
+              <div class="row" style="gap:10px">
+                <div class="avatar-mini">М</div>
+                <div>
+                  <div style="font-weight:800">Марина</div>
+                  <div class="small muted">обычно отвечает за 3–5 минут</div>
+                </div>
+              </div>
+              <button class="btn btn-soft" data-go="master">Профиль</button>
+            </div>
+            <div class="divider"></div>
+            <div id="chatBox" class="stack" style="max-height:320px;overflow:auto;padding-right:4px"></div>
+            <div class="divider"></div>
+            <div class="row" style="gap:8px;align-items:flex-end">
+              <textarea id="chatInput" class="textarea" style="min-height:56px;flex:1;margin:0" placeholder="Напишите вопрос мастеру..."></textarea>
+              <button class="btn btn-primary" id="sendChatBtn" style="height:56px;min-width:72px">Отпр.</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="screen" id="screen-history">
+          <div class="top-title">
+            <div>
+              <h2>История посещений</h2>
+              <p>Здесь можно хранить фото, рекомендации и повтор записи.</p>
+            </div>
+            <span class="tag">архив</span>
+          </div>
+          <div class="list">
+            <div class="history-tile">
+              <div class="thumb">📅</div>
+              <div style="flex:1">
+                <p class="title">12 марта • женская стрижка</p>
+                <p class="meta">Марина • оценка 5/5 • рекомендация по уходу</p>
+                <div class="hero-actions" style="margin-top:10px">
+                  <button class="btn btn-soft" id="openBeforeAfterBtn">Фото до / после</button>
+                  <button class="btn btn-ghost" data-go="catalog">Рекомендовано</button>
+                </div>
+              </div>
+            </div>
+            <div class="history-tile">
+              <div class="thumb">✂️</div>
+              <div style="flex:1">
+                <p class="title">23 февраля • детская стрижка</p>
+                <p class="meta">Фото результата можно прикрепить к записи.</p>
+                <div class="hero-actions" style="margin-top:10px">
+                  <button class="btn btn-soft" data-go="booking">Повторить</button>
+                  <button class="btn btn-ghost" data-go="chat">Написать</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CATALOG -->
+        <section class="screen" id="screen-catalog">
+          <div class="top-title">
+            <div>
+              <h2>Мастер рекомендует</h2>
+              <p>Каталог товаров без доставки: бронь и покупка в салоне.</p>
+            </div>
+            <span class="tag">резерв</span>
+          </div>
+          <div class="list">
+            <div class="product-tile">
+              <div class="thumb">🧴</div>
+              <div style="flex:1">
+                <p class="title">Шампунь для объёма</p>
+                <p class="meta">Рекомендация после стрижки и укладки.</p>
+              </div>
+              <button class="btn btn-soft reserve-btn" data-product="Шампунь для объёма">Забронировать</button>
+            </div>
+            <div class="product-tile">
+              <div class="thumb">💨</div>
+              <div style="flex:1">
+                <p class="title">Спрей термозащита</p>
+                <p class="meta">Для фена и утюжка, выдача в салоне.</p>
+              </div>
+              <button class="btn btn-soft reserve-btn" data-product="Спрей термозащита">Забронировать</button>
+            </div>
+            <div class="product-tile">
+              <div class="thumb">🧡</div>
+              <div style="flex:1">
+                <p class="title">Питательная маска</p>
+                <p class="meta">Для домашнего ухода 1–2 раза в неделю.</p>
+              </div>
+              <button class="btn btn-soft reserve-btn" data-product="Питательная маска">Забронировать</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h3>Ваши брони</h3>
+            <div id="reservedList" class="small muted">Пока ничего не забронировано.</div>
+          </div>
+        </section>
+
+        <!-- FAMILY -->
+        <section class="screen" id="screen-family">
+          <div class="top-title">
+            <div>
+              <h2>Семейные профили</h2>
+              <p>Главный профиль мамы и члены семьи внутри него.</p>
+            </div>
+            <span class="tag">семья</span>
+          </div>
+          <div class="card">
+            <div class="field">
+              <div class="label">Добавить члена семьи</div>
+              <div class="grid2">
+                <input id="familyName" class="input" placeholder="Имя" />
+                <input id="familyRole" class="input" placeholder="Кто это?" />
+              </div>
+              <button class="btn btn-primary" id="addFamilyBtn">Добавить профиль</button>
+            </div>
+          </div>
+          <div class="list" id="familyList" style="margin-top:12px"></div>
+        </section>
+
+        <!-- PROFILE -->
+        <section class="screen" id="screen-profile">
+          <div class="top-title">
+            <div>
+              <h2>Профиль клиента</h2>
+              <p>Настройки, бонусы, оплата и контакты салона.</p>
+            </div>
+            <span class="tag">моя карта</span>
+          </div>
+          <div class="card">
+            <div class="row space">
+              <div class="row" style="gap:12px">
+                <div class="avatar-mini" style="width:56px;height:56px;font-size:18px">А</div>
+                <div>
+                  <div style="font-weight:900">Анна Петрова</div>
+                  <div class="small muted">+7 (999) 123-45-67</div>
+                </div>
+              </div>
+              <span class="badge">320</span>
+            </div>
+            <div class="divider"></div>
+            <div class="checklist">
+              <div class="check"><div class="box">✓</div><div class="small">Оплата услуг прямо в приложении</div></div>
+              <div class="check"><div class="box">✓</div><div class="small">Push-уведомления о визитах и акциях</div></div>
+              <div class="check"><div class="box">✓</div><div class="small">Отмена и перенос записи</div></div>
+            </div>
+            <div class="hero-actions" style="margin-top:14px">
+              <button class="btn btn-primary" id="payBtn" style="flex:1">Оплатить услугу</button>
+              <button class="btn btn-ghost" id="notifyBtn" style="flex:1">Включить уведомления</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h3>Контакты салона</h3>
+            <div class="small muted">ул. Примерная, 10 • +7 (900) 000-00-00 • WhatsApp / Telegram</div>
+            <div class="card" style="margin-top:10px;background:#f7faff">
+              <div class="small muted">Карта</div>
+              <div style="height:120px;border-radius:16px;background:linear-gradient(135deg,#e8eef9,#ffffff);display:grid;place-items:center;font-size:34px">🗺️</div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" id="bottomNav">
+        <div class="nav-item active" data-go="home"><div class="ico">🏠</div><div>Главная</div></div>
+        <div class="nav-item" data-go="booking"><div class="ico">📅</div><div>Запись</div></div>
+        <div class="nav-item" data-go="master"><div class="ico">✂️</div><div>Мастер</div></div>
+        <div class="nav-item" data-go="profile"><div class="ico">👤</div><div>Профиль</div></div>
+      </nav>
+      <div class="safe-bottom-gap"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal" id="cancelModal">
+    <div class="sheet">
+      <h3>Отменить или перенести запись</h3>
+      <div class="small muted">Это демо-окно: можно показать работу кнопок без настоящей серверной части.</div>
+      <div class="divider"></div>
+      <div class="hero-actions">
+        <button class="btn btn-danger" id="cancelBookingBtn" style="flex:1">Отменить</button>
+        <button class="btn btn-soft" id="rescheduleBtn" style="flex:1">Перенести</button>
+      </div>
+      <button class="btn btn-ghost btn-block" id="closeModalBtn" style="margin-top:10px">Закрыть</button>
+    </div>
+  </div>
+
+  <div class="modal" id="payModal">
+    <div class="sheet">
+      <h3>Оплата услуги</h3>
+      <div class="small muted">Подключение платёжки можно добавить позже, сейчас это рабочая демонстрация сценария.</div>
+      <div class="divider"></div>
+      <div class="card" style="background:#f7faff">
+        <div class="row space"><span>Сумма</span><strong>1 800 ₽</strong></div>
+        <div class="row space" style="margin-top:8px"><span>Списать баллы</span><strong>-200 ₽</strong></div>
+        <div class="row space" style="margin-top:8px"><span>Итого</span><strong>1 600 ₽</strong></div>
+      </div>
+      <div class="hero-actions" style="margin-top:12px">
+        <button class="btn btn-primary" id="finishPayBtn" style="flex:1">Оплатить</button>
+        <button class="btn btn-ghost" id="closePayBtn" style="flex:1">Назад</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="afterModal">
+    <div class="sheet">
+      <h3>Фото до / после</h3>
+      <div class="gallery">
+        <div class="beforeafter">
+          <div class="ba-top" style="background:linear-gradient(135deg,#f8c99b,#ee8b3c)">До</div>
+          <div class="ba-bottom">Тусклые концы, нет формы</div>
+        </div>
+        <div class="beforeafter">
+          <div class="ba-top" style="background:linear-gradient(135deg,#8cb1ff,#2d6cdf)">После</div>
+          <div class="ba-bottom">Живой объём, аккуратный срез</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-block" id="closeAfterBtn" style="margin-top:12px">Закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'modern-salon-app-v1';
+    const state = {
+      user: { name: 'Анна', phone: '+7 (999) 123-45-67' },
+      family: [
+        { name: 'Анна', role: 'мама' },
+        { name: 'Игорь', role: 'муж' },
+        { name: 'Лиза', role: 'дочка' },
+        { name: 'Миша', role: 'сын' }
+      ],
+      selectedFamily: 'Анна',
+      selectedService: 'Женская стрижка',
+      selectedMaster: 'Марина',
+      selectedDate: '',
+      selectedTime: '15:20',
+      bonus: 320,
+      reserved: [],
+      chat: [
+        { who: 'master', text: 'Здравствуйте! Подскажите, что вы хотите изменить в стрижке?' },
+        { who: 'client', text: 'Хочу сохранить длину и добавить объём у лица.' }
+      ],
+      bookingActive: true
+    };
+
+    const services = [
+      { name: 'Женская стрижка', price: '1 800 ₽', emoji: '✂️' },
+      { name: 'Окрашивание', price: 'от 3 500 ₽', emoji: '🎨' }
+    ];
+    const masters = [
+      { name: 'Марина', emoji: '👩‍🦰', descr: '12 лет опыта' },
+      { name: 'Ольга', emoji: '💇‍♀️', descr: 'детские стрижки' }
+    ];
+    const times = ['09:00','10:00','11:30','13:00','15:20','17:00','18:30'];
+
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function load(){
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if(saved && typeof saved === 'object') Object.assign(state, saved);
+      } catch(e) {}
+    }
+    function toast(msg){
+      const el = $('#toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove('show'), 2200);
+    }
+    function openModal(id){ $(id).classList.add('show'); }
+    function closeModal(id){ $(id).classList.remove('show'); }
+
+    function route(name){
+      location.hash = '#' + name;
+      render();
+    }
+    function getRoute(){
+      return (location.hash || '#login').replace('#','');
+    }
+
+    function renderBottom(routeName){
+      $$('#bottomNav .nav-item').forEach(i => i.classList.remove('active'));
+      const map = {home:0, booking:1, master:2, chat:2, history:0, catalog:0, family:0, profile:3, service:0};
+      const idx = map[routeName];
+      if(typeof idx === 'number' && $$('#bottomNav .nav-item')[idx]) $$('#bottomNav .nav-item')[idx].classList.add('active');
+    }
+
+    function setActiveScreen(name){
+      $$('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+      renderBottom(name);
+      $('#headerSubtitle').textContent = name === 'login' ? 'семейный салон красоты' : 'онлайн-запись и личный кабинет';
+      $('#contentScrollToTop');
+      const c = document.querySelector('.content');
+      if(c) c.scrollTop = 0;
+    }
+
+    function renderChips(){
+      const familyChips = $('#familyChips');
+      familyChips.innerHTML = state.family.map(p => `
+        <button class="chip ${state.selectedFamily===p.name ? 'active':''}" data-family="${p.name}">${p.name} • ${p.role}</button>
+      `).join('');
+      familyChips.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedFamily = btn.dataset.family;
+        save(); render(); toast('Выбрано: ' + state.selectedFamily);
+      }));
+
+      const bookFor = $('#bookForChips');
+      bookFor.innerHTML = state.family.map(p => `
+        <button class="chip ${state.selectedFamily===p.name ? 'active':''}" data-family="${p.name}">${p.name}</button>
+      `).join('') + '<button class="chip">+ Член семьи</button>';
+      bookFor.querySelectorAll('button[data-family]').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedFamily = btn.dataset.family;
+        save(); render();
+      }));
+
+      const serviceChips = $('#serviceChips');
+      serviceChips.innerHTML = services.map(s => `
+        <button class="chip ${state.selectedService===s.name ? 'active':''}" data-service="${s.name}">${s.emoji} ${s.name}</button>
+      `).join('');
+      serviceChips.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedService = btn.dataset.service;
+        save(); render();
+      }));
+
+      const masterChips = $('#masterChips');
+      masterChips.innerHTML = masters.map(m => `
+        <button class="chip ${state.selectedMaster===m.name ? 'active':''}" data-master="${m.name}">${m.emoji} ${m.name}</button>
+      `).join('');
+      masterChips.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedMaster = btn.dataset.master;
+        save(); render();
+      }));
+    }
+
+    function renderFamily(){
+      const list = $('#familyList');
+      list.innerHTML = state.family.map((p, i) => `
+        <div class="family-tile">
+          <div class="row" style="gap:12px">
+            <div class="avatar-mini">${p.name.slice(0,1).toUpperCase()}</div>
+            <div>
+              <div style="font-weight:800">${p.name}</div>
+              <div class="small muted">${p.role}</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" data-select-family="${p.name}">Выбрать</button>
+        </div>
+      `).join('');
+      list.querySelectorAll('[data-select-family]').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedFamily = btn.dataset.selectFamily;
+        save();
+        toast('Профиль выбран: ' + state.selectedFamily);
+        route('booking');
+      }));
+    }
+
+    function renderBooking(){
+      const dateInput = $('#dateInput');
+      if(!dateInput.value){
+        const d = new Date(); d.setDate(d.getDate()+2);
+        dateInput.value = d.toISOString().slice(0,10);
+      }
+      state.selectedDate = dateInput.value;
+      const timeSel = $('#timeInput');
+      timeSel.innerHTML = times.map(t => `<option ${state.selectedTime===t?'selected':''}>${t}</option>`).join('');
+      timeSel.value = state.selectedTime;
+    }
+
+    function renderChat(){
+      const box = $('#chatBox');
+      box.innerHTML = state.chat.map(m => `
+        <div class="${m.who==='client' ? 'row' : 'row'}" style="justify-content:${m.who==='client' ? 'flex-end' : 'flex-start'}">
+          <div style="max-width:84%;padding:12px 14px;border-radius:18px;background:${m.who==='client' ? 'linear-gradient(135deg,#2d6cdf,#4f88ff)' : '#f4f7fb'};color:${m.who==='client' ? '#fff' : 'var(--text)'};border:1px solid ${m.who==='client' ? 'transparent' : 'var(--line)'};font-size:13px;line-height:1.45">${m.text}</div>
+        </div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderReserved(){
+      const el = $('#reservedList');
+      if(!state.reserved.length){ el.textContent = 'Пока ничего не забронировано.'; return; }
+      el.innerHTML = state.reserved.map(x => `<div style="padding:8px 0;border-bottom:1px solid var(--line)">${x}</div>`).join('');
+    }
+
+    function renderTime(){
+      const d = new Date();
+      $('#statusTime').textContent = d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function render(){
+      load();
+      let current = getRoute();
+      if(!current || !$('#screen-' + current)) {
+        current = 'login';
+        if(location.hash !== '#login') location.hash = '#login';
+      }
+      setActiveScreen(current);
+      renderBottom(current);
+      renderChips();
+      renderFamily();
+      renderBooking();
+      renderChat();
+      renderReserved();
+      $('#homeGreeting').textContent = `Привет, ${state.user.name}`;
+      $('#headerSubtitle').textContent = current === 'login' ? 'семейный салон красоты' : 'онлайн-запись и личный кабинет';
+      $$('.btn[data-go], .nav-item[data-go]').forEach(btn => {
+        btn.onclick = () => route(btn.dataset.go);
+      });
+      $('.badge').textContent = state.bonus;
+      $$('#familyChips .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.family === state.selectedFamily));
+      $$('#bookForChips .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.family === state.selectedFamily));
+      $$('#serviceChips .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.service === state.selectedService));
+      $$('#masterChips .chip').forEach(ch => ch.classList.toggle('active', ch.dataset.master === state.selectedMaster));
+    }
+
+    $('#sendCodeBtn').addEventListener('click', () => {
+      $('#codeBlock').classList.remove('hidden');
+      $('#loginBtn').classList.remove('hidden');
+      $('#sendCodeBtn').classList.add('hidden');
+      toast('Код отправлен в SMS');
+    });
+
+    $('#loginBtn').addEventListener('click', () => {
+      state.user.phone = $('#phoneInput').value.trim() || state.user.phone;
+      state.user.name = 'Анна';
+      save();
+      toast('Вход выполнен');
+      route('home');
+    });
+
+    $('#quickBookBtn').addEventListener('click', () => route('booking'));
+    $('#openChatShortcut').addEventListener('click', () => route('chat'));
+    $('#goFamilyBtn').addEventListener('click', () => route('family'));
+    $('#openCatalogBtn').addEventListener('click', () => route('catalog'));
+    $('#openChatBtn').addEventListener('click', () => route('chat'));
+    $('#openBeforeAfterBtn').addEventListener('click', () => openModal('#afterModal'));
+    $('#closeAfterBtn').addEventListener('click', () => closeModal('#afterModal'));
+    $('#openCancelModalBtn').addEventListener('click', () => openModal('#cancelModal'));
+    $('#closeModalBtn').addEventListener('click', () => closeModal('#cancelModal'));
+    $('#cancelBookingBtn').addEventListener('click', () => {
+      state.bookingActive = false;
+      save();
+      closeModal('#cancelModal');
+      toast('Запись отменена');
+    });
+    $('#rescheduleBtn').addEventListener('click', () => {
+      closeModal('#cancelModal');
+      route('booking');
+      toast('Выберите новое время');
+    });
+    $('#confirmBookingBtn').addEventListener('click', () => {
+      state.selectedDate = $('#dateInput').value;
+      state.selectedTime = $('#timeInput').value;
+      const summary = `${state.selectedService} для ${state.selectedFamily} • ${state.selectedDate} ${state.selectedTime} • мастер ${state.selectedMaster}`;
+      state.bookingActive = true;
+      state.reserved.unshift(summary);
+      state.chat.push({ who:'master', text:'Запись подтверждена. Ждём вас в салоне.' });
+      save();
+      render();
+      route('home');
+      toast('Запись подтверждена');
+    });
+
+    $('#sendChatBtn').addEventListener('click', () => {
+      const inp = $('#chatInput');
+      const text = inp.value.trim();
+      if(!text) return;
+      state.chat.push({ who:'client', text });
+      inp.value = '';
+      save();
+      renderChat();
+      setTimeout(() => {
+        state.chat.push({ who:'master', text:'Спасибо! Я подскажу по процедуре и подберу подходящий уход.' });
+        save();
+        renderChat();
+      }, 700);
+    });
+
+    $('#addFamilyBtn').addEventListener('click', () => {
+      const name = $('#familyName').value.trim();
+      const role = $('#familyRole').value.trim();
+      if(!name || !role){ toast('Заполните имя и роль'); return; }
+      state.family.push({ name, role });
+      $('#familyName').value = '';
+      $('#familyRole').value = '';
+      save(); render(); toast('Профиль добавлен');
+    });
+
+    $('#payBtn').addEventListener('click', () => openModal('#payModal'));
+    $('#closePayBtn').addEventListener('click', () => closeModal('#payModal'));
+    $('#finishPayBtn').addEventListener('click', () => {
+      state.bonus = Math.max(0, state.bonus - 200);
+      save(); render(); closeModal('#payModal'); toast('Оплата проведена');
+    });
+    $('#notifyBtn').addEventListener('click', () => toast('Уведомления включены'));
+
+    $$('.reserve-btn').forEach(btn => btn.addEventListener('click', () => {
+      state.reserved.push(`${btn.dataset.product} • забронировано для самовывоза`);
+      save(); renderReserved(); toast('Товар забронирован');
+      route('catalog');
+    }));
+
+    $$('#bottomNav .nav-item').forEach(item => item.addEventListener('click', () => route(item.dataset.go)));
+    $$('.modal').forEach(mod => mod.addEventListener('click', (e) => { if(e.target === mod) mod.classList.remove('show'); }));
+    $('#dateInput').addEventListener('change', () => { state.selectedDate = $('#dateInput').value; save(); });
+    $('#timeInput').addEventListener('change', () => { state.selectedTime = $('#timeInput').value; save(); });
+    $('#phoneInput').addEventListener('input', save);
+    $('#codeInput').addEventListener('input', save);
+
+    function bootstrap(){
+      if(!location.hash) location.hash = '#login';
+      render();
+      renderTime();
+      setInterval(renderTime, 1000);
+    }
+
+    window.addEventListener('hashchange', render);
+    window.addEventListener('load', bootstrap);
+  </script>
+</body>
+</html>
